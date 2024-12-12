@@ -1,16 +1,19 @@
 import { FastifyInstance } from 'fastify';
-import { db } from '../infra/database/postgres';
+import { container } from 'tsyringe';
+import { UsersController } from '../controllers/UsersController';
 
 export const routes = (fastify: FastifyInstance) => {
+  const usersController = container.resolve(UsersController);
+
   fastify.addHook('onSend', (_, response, error, done) => {
     response.header('Content-Type', 'application/json; charset=utf-8');
     if (error) console.log(`Error: ${error}`);
     done();
   });
 
-  fastify.get('/', async function handler(request, response) {
-    const users = await db.query('select * from users');
-    console.log('users');
-    response.code(200).send(users);
+  fastify.get('/users', {
+    handler: async (request, reply) => {
+      return await usersController.findAll(request, reply);
+    },
   });
 };

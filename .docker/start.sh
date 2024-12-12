@@ -1,5 +1,6 @@
 #!/bin/bash
-
-# tail -f /dev/null
+yarn install
 
 yarn dev
+
+# tail -f /dev/null
